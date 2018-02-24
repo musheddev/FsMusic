@@ -1,0 +1,7 @@
+source https://www.nuget.org/api/v2
+
+framework: >= net461
+nuget DiffSharp
+nuget FSharp.Charting
+nuget FSharp.Core
+nuget NAudio
