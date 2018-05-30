@@ -23,6 +23,15 @@ let secondOrder_RK (fn1 :D*D->D) (fn2 :D*D->D) (x1 :D) (x2 :D) (dt :D) =
     let xdot1 = x1 + (1./6.)*(k1 + (D 2.)*k2 + (D 2.)*k3 + k4)
     let xdot2 = x2 + (1./6.)*(l1 + (D 2.)*l2 + (D 2.)*l3 + l4)
     xdot1,xdot2
+
+let nOrder_RK (fns :(D [] -> D) []) (xs :D []) (dt :D) =
+    let k1 = Array.map (fun fn -> (fn xs)*dt) fns    
+    let k2 = Array.map (fun fn -> (fn (Array.map2 (fun x k -> x + (D 0.5)*k) xs k1))*dt) fns
+    let k3 = Array.map (fun fn -> (fn (Array.map2 (fun x k -> x + (D 0.5)*k) xs k2))*dt) fns
+    let k4 = Array.map (fun fn -> (fn (Array.map2 (fun x k -> x + k) xs k3))*dt) fns
+    let primes = Array.zip (Array.zip3 xs k1 k2) (Array.zip k3 k4)
+    Array.map (fun ((x,k1,k2),(k3,k4)) -> x + (1./6.)*(k1 + (D 2.)*k2 + (D 2.)*k3 + k4)) primes
+
 let wave (amp :D) (w :D) (phase :D) (t :D) =
     amp * sin(w*t + phase)
 
@@ -47,8 +56,60 @@ let makeg (c1 :D) (c2 :D) (p :D) (q :D) = //linear case but summation doesn't ma
          let y fn = List.sumBy (fun x -> fn(D x)*(D 0.01)) [0.0 .. 0.01 .. 6.28]
          c1*(y yfn) + c2*(y (diff yfn))
 
+//mode locking fletcher 1978
+type ModeParam =
+    { 
+        Mode : int
+        Freq : float
+        Driver : float
+        Amp : float
+        C : float []
+    }
+let make_fdots_2 modei modej c1 c2 =
+    let p = float modej.Mode
+    let q = float modei.Mode
+    let C1 =
+        let s = q - 1.
+        (p + s)/(p*s*(2.**(p+s)))*c1
+    let C2 =
+        let r = p - 1.
+        (r + q)/(r*q*(2.**(r+q)))*c1
+    let fj xj t deltai thetai deltaj thetaj ampi ampj =
+        (modej.Driver/(modej.Freq*xj))
+        * ((modej.C.[0]*ampj*modej.Freq + 0.25*modej.C.[2]*(ampj**3.0)*(modej.Freq**3.0))*sin(deltaj)
+        + C1*sin((p*modei.Freq - q*modej.Freq)*t + p*(thetai+deltai) - q*(thetaj+deltaj) + deltaj))
+    let fi xi t deltai thetai deltaj thetaj ampi ampj =
+        (modei.Driver/(modei.Freq*xi))
+        * ((modei.C.[0]*ampi*modei.Freq + 0.25*modei.C.[2]*(ampi**3.0)*(modei.Freq**3.0))*sin(deltai)
+        + C2*sin((p*modei.Freq - q*modej.Freq)*t + p*(thetai+deltai) - q*(thetaj+deltaj) + deltai))
+    (fi,fj)
 
+let makec1 a n (C : float []) =
+    List.fold (fun acc i -> 
+        let k = float (i*2 + 1)
+        acc + C.[i]*(0.5**(float (i*2))*(a**k)*(n**k))) 0. [0 .. (C.Length - 1)]
 
+let factorial x = 
+    let rec util(value, acc) = 
+        match value with
+        |0 | 1 -> acc
+        | _    -> util(value - 1, acc * float value)
+    util(x,1.)
+
+let makec2 mode (modes :ModeParam []) (C :float []) =
+    let len = modes.Length
+    let ary = [1 .. 1 .. len]
+    let sum = List.sum ary - 1
+    let top = factorial sum
+    let bottom = List.fold (fun acc x -> if (len - mode) = x then acc*(factorial (x - 1)) else acc*(factorial x)) 0.0 ary
+    let c = (top*(C.[mode-1]**(float sum)))/(bottom*(2.**(float sum)))
+    let revary = List.rev ary 
+    let pre = Array.fold (fun acc m ->
+            let i = float revary.[m.Mode - 1]
+            if mode = m.Mode 
+            then acc*(m.Freq**(i-1.0))*(m.Amp**i)
+            else acc*(m.Freq**i)*(m.Amp**i)) 0.0 modes
+    pre*c
 
 open FSharp.Charting
 let test1() =
