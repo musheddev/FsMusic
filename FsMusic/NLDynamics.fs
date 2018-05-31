@@ -65,6 +65,14 @@ type ModeParam =
         Amp : float
         C : float []
     }
+
+type ModeActives =
+    {
+        Freq :float
+        Amp :float
+        Delta :float
+        Phi :float
+    }    
 let make_fdots_2 modei modej c1 c2 =
     let p = float modej.Mode
     let q = float modei.Mode
@@ -110,6 +118,14 @@ let makec2 mode (modes :ModeParam []) (C :float []) =
             then acc*(m.Freq**(i-1.0))*(m.Amp**i)
             else acc*(m.Freq**i)*(m.Amp**i)) 0.0 modes
     pre*c
+
+let make_fdots_n (modes :ModeParam []) ary =
+    Array.map (fun m ->
+    (fun t (a :ModeActives) ->
+        (m.Driver/(a.Freq*a.Amp))*(makec1 a.Amp a.Freq m.C)*(sin a.Delta)
+        + (makec2 m.Mode modes ary)*(sin())
+        )) modes
+
 
 open FSharp.Charting
 let test1() =
