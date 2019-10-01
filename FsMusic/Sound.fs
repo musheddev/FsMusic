@@ -4,7 +4,6 @@
 module Sound =
 
     open FMusic.Types
-    open DiffSharp.AD.Float64
     open FMusic.Music
     open System
 
@@ -21,13 +20,13 @@ module Sound =
         (fun tone -> {tone with vel=(fun x -> D.One - x/(D attack))} ) //not done
                         
 
-    let set_vel (vol:D) :Tonefunc =  (fun x -> {x with vel=(fun y ->vol)} )
+    let set_vel (vol:float) :Tonefunc =  (fun x -> {x with vel=(fun y ->vol)} )
 
-    let adjust_vel (vol:D) :Tonefunc = (fun x -> {x with vel=(fun y -> y * vol) >> x.vel } )
+    let adjust_vel (vol:float) :Tonefunc = (fun x -> {x with vel=(fun y -> y * vol) >> x.vel } )
 
 
 
-    let shift_time (len :D) :Sectionfunc = (fun x -> { x with start=x.start+len} )
+    let shift_time (len :float) :Sectionfunc = (fun x -> { x with start=x.start+len} )
     
     let additive_mixer :Mixer= 
         (fun sections -> 

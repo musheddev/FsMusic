@@ -6,12 +6,8 @@ module Types =
     open System.Collections.Generic
     open System
     open FSharp.Core
-    open DiffSharp
-    open DiffSharp.Numerical.Float64
-    open DiffSharp.AD
-    open DiffSharp.AD.Float64
   
-    //sample is float bound by -1.0 to 1.0 
+    //sample is float boundecimal by -1.0 to 1.0 
 
     type Bitrate =
     | B24bit = 24
@@ -24,38 +20,40 @@ module Types =
     | k96 = 96000
     | k48 = 48000
 
-    let freq f = (fun (time :D) -> f*time*(D 2.0*Math.PI))  //time to rad
+    let freq f = (fun (time :decimal) -> f*time*(2.0m * (decimal Math.PI)))  //time to radecimal
 
     type Tone = {  //local time continous
-                        time :D->D //sampler remap leave alone
-                        freq :D->D  //time to freq
-                        vel :D->D //time to vel
-                        wave :Tone -> D ->D //rad to amp
+                        time :decimal->decimal //sampler remap leave alone
+                        freq :decimal->decimal  //time to freq
+                        vel :decimal->decimal //time to vel
+                        wave :Tone -> decimal ->decimal //radecimal to amp
                       }
 
-    type Segment = { //global time discrate
-                        start :D
+    type Segment = { //global time decimaliscrate
+                        start :decimal
                         tone :Tone
-                        fin :D}
+                        fin :decimal}
 
-    type Section = { start :D 
+    type Section = { start :decimal 
                      segments: Segment list
-                     fin :D}
+                     fin :decimal}
 
     type Sectionfunc = Section -> Section
     
     type Tonefunc = (Tone -> Tone)
 
 
-    type Mixer = Section list -> (D -> D) 
+    type Mixer = Section list -> (decimal -> decimal) 
 
-    type Render = Section list * Mixer * Samplerate -> DV
+    type DV = decimal []
+
+    type Rendecimaler = Section list * Mixer * Samplerate -> DV
 
     type Filter = DV -> DV
 
     type Sound = DV
 
-    type Audio = 
+    type Audecimalio = 
         | Mono of Sound
         | Stereo of Sound * Sound
         | Multi of Sound list
@@ -70,9 +68,9 @@ module Music =
     let trootoftwo = 1.0594630943592952645618252949463
     let private resolve (n :Note) (b :int) = (fst n)*b + (snd n)
 
-    let EDO12 (note :Note) = 440.0*Math.Pow(trootoftwo,float (resolve note 12))
+    let EdecimalO12 (note :Note) = 440.0*Math.Pow(trootoftwo,float (resolve note 12))
 
-    let EDO53 (note :Note) = 
+    let EdecimalO53 (note :Note) = 
         let A0 = 440.0*float(fst note + (53/(snd note)) )  
         let range = match (53 % (snd note)) with
                     | 0 -> [1.0]

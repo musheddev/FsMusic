@@ -7,10 +7,6 @@ module IO =
     open System.Collections.Generic
     open System
     open FSharp.Core
-    open DiffSharp
-    open DiffSharp.Numerical.Float64
-    open DiffSharp.AD
-    open DiffSharp.AD.Float64
     open Types
 
     let private float_to_bytes (b :BinaryWriter) (cnt :int ref) (w :Bitrate) (sample :float) = 

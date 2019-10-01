@@ -6,7 +6,7 @@ module execute
 open FMusic
 open FMusic.Types
 open FMusic.Music
-open DiffSharp.AD.Float64
+
 
 let instrement f decay =
     let wavey = (fun s t -> Sound.sine_wave s t |> D.Sqrt )
