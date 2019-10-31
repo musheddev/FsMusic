@@ -123,11 +123,11 @@ let make_fdots_n (modes :ModeParam []) ary =
     Array.map (fun m ->
     (fun t (a :ModeActives) ->
         (m.Driver/(a.Freq*a.Amp))*(makec1 a.Amp a.Freq m.C)*(sin a.Delta)
-        + (makec2 m.Mode modes ary)*(sin())
+        + (makec2 m.Mode modes ary)*(sin(t))
         )) modes
 
 
-open FSharp.Charting
+open XPlot.Plotly
 let test1() =
     let fn (x :D) = x*(1-x)
     let dt = 0.1
@@ -136,7 +136,7 @@ let test1() =
             let xn = rungeKutta fn x (D dt)
             ((t, float xn),xn)) (D 1.5) [for t in 0. .. dt .. 10. -> t]
     printfn "%O" (fst chart)        
-    Chart.Line(chart |> fst).ShowChart()
+    Chart.Line(chart |> fst).Show()
 
 //let test2() = //single mode
 let c1 = D 0.1
@@ -162,8 +162,8 @@ let charts1 =
 let charts2 = 
     List.map (fun x -> make_chart c1 c2 freq (D x) alpha dt (snd >> float) |> Chart.Line) [0.0 .. 0.1 .. 1.]
         
-let chart1 = (make_chart (D 0.1) (D 0.01) (D 120.) (D 0.5) (D 0.1) dt (snd >> float) |> Chart.Line).ShowChart()
-let chart2 = (make_chart (D 0.1) (D 0.01) (D 120.) (D 0.5) (D 0.1) dt (fst >> float) |> Chart.Line).WithYAxis(Max = 121., Min = 119.).ShowChart()
+// let chart1 = (make_chart (D 0.1) (D 0.01) (D 120.) (D 0.5) (D 0.1) dt (snd >> float) |> Chart.Line).ShowChart()
+// let chart2 = (make_chart (D 0.1) (D 0.01) (D 120.) (D 0.5) (D 0.1) dt (fst >> float) |> Chart.Line).WithYAxis(Max = 121., Min = 119.).ShowChart()
 
-Chart.Combine(charts1).ShowChart()
-Chart.Combine(charts2).ShowChart()
+// Chart.Combine(charts1).ShowChart()
+// Chart.Combine(charts2).ShowChart()

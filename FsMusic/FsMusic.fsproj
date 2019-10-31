@@ -1,19 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Sound.fs" />
     <Compile Include="NLDynamics.fs" />
     <Compile Include="Program.fs" />
-    <None Include="App.config" />
   </ItemGroup>
+
   <ItemGroup>
-    <Reference Include="System.Windows.Forms.DataVisualization" />
-    <Reference Include="System.Windows.Forms" />
+    <PackageReference Include="DiffSharp" Version="0.8.4-beta" />
+    <PackageReference Include="Expecto" Version="8.12.0" />
+    <PackageReference Include="NAudio" Version="1.9.0" />
+    <PackageReference Include="XPlot.Plotly" Version="2.0.0" />
+    <PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.8.0" />
   </ItemGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
+
 </Project>
