@@ -7,6 +7,7 @@ open FMusic
 open FMusic.Types
 open FMusic.Music
 open DiffSharp.AD.Float64
+open Expecto
 
 let instrement f decay =
     let wavey = (fun s t -> Sound.sine_wave s t |> D.Sqrt )
@@ -28,6 +29,6 @@ let test_one name =
 
 [<EntryPoint>]
 let main argv = 
-    printfn "%A" argv
+    runTestsWithArgs defaultConfig argv Tests.tests
     test_one "test.wav"
     0 // return an integer exit code
