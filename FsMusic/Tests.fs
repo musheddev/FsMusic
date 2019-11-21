@@ -1,4 +1,4 @@
-module Tests
+﻿module Tests
 
 open Expecto
 open XPlot.Plotly
@@ -64,4 +64,46 @@ let someTest = testCase "fletcher" <| fun _ ->
   Expect.isTrue true ""
 
 
-let tests = testList "tests" [ rungekuttaTest; someTest]
+let fletcher1999 = testCase "flecther1999" <| fun _ ->
+    let results = Fletcher.example()
+    let x_axis = results |> Array.map (fun x -> x.[0].t) 
+
+    let mode m = results |> Array.map (fun x -> x |> Array.find (fun y -> y.Mode = m))
+
+    let charts m =
+      let modeResult = mode m
+
+      let chartY = Scatter( 
+        x = x_axis,
+        y = Array.map (fun (x : Fletcher.ModeActives) -> x.Y) modeResult,
+        name = sprintf "Y mode %i" m,
+        mode = "lines+markers")
+
+      let chartA = Scatter(
+        x = x_axis,
+        y = Array.map (fun (x : Fletcher.ModeActives) -> x.a) modeResult,
+        name = sprintf "a mode %i" m,
+        mode = "lines+markers")
+      
+      let chartPhase = Scatter( 
+        x = x_axis,
+        y = Array.map (fun (x : Fletcher.ModeActives) -> x.ϕ) modeResult,
+        name = sprintf "ϕ mode %i" m,
+        mode = "lines+markers")
+
+      let chartFreq = Scatter( 
+        x = x_axis,
+        y = Array.map (fun (x : Fletcher.ModeActives) -> x.ω) modeResult,
+        name = sprintf "ω mode %i" m,
+        mode = "lines+markers")
+
+      [chartY; chartA; chartPhase; chartFreq ]
+
+    List.zip (charts 1) (charts 2)
+    |> List.iter (fun (ch1,ch2) -> 
+      [ch1;ch2] |> Chart.Plot |> Chart.Show
+    )
+
+    Expect.isTrue true ""
+
+let tests = testList "tests" [ rungekuttaTest; fletcher1999]

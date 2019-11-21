@@ -10,6 +10,7 @@
     <Compile Include="IO.fs" />
     <Compile Include="Sound.fs" />
     <Compile Include="NLDynamics.fs" />
+    <Compile Include="Fletcher.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
