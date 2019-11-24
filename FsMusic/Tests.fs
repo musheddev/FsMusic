@@ -75,25 +75,25 @@ let fletcher1999 = testCase "flecther1999" <| fun _ ->
 
       let chartY = Scatter( 
         x = x_axis,
-        y = Array.map (fun (x : Fletcher.ModeActives) -> x.Y) modeResult,
+        y = Array.map (fun (x : Fletcher.SimState) -> x.Y) modeResult,
         name = sprintf "Y mode %i" m,
         mode = "lines+markers")
 
       let chartA = Scatter(
         x = x_axis,
-        y = Array.map (fun (x : Fletcher.ModeActives) -> x.a) modeResult,
+        y = Array.map (fun (x : Fletcher.SimState) -> x.a) modeResult,
         name = sprintf "a mode %i" m,
         mode = "lines+markers")
       
       let chartPhase = Scatter( 
         x = x_axis,
-        y = Array.map (fun (x : Fletcher.ModeActives) -> x.ϕ) modeResult,
+        y = Array.map (fun (x : Fletcher.SimState) -> x.ϕ) modeResult,
         name = sprintf "ϕ mode %i" m,
         mode = "lines+markers")
 
       let chartFreq = Scatter( 
         x = x_axis,
-        y = Array.map (fun (x : Fletcher.ModeActives) -> x.ω) modeResult,
+        y = Array.map (fun (x : Fletcher.SimState) -> x.ω) modeResult,
         name = sprintf "ω mode %i" m,
         mode = "lines+markers")
 
@@ -106,4 +106,4 @@ let fletcher1999 = testCase "flecther1999" <| fun _ ->
 
     Expect.isTrue true ""
 
-let tests = testList "tests" [ rungekuttaTest; fletcher1999]
+let tests = testList "tests" [ fletcher1999]
