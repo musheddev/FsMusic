@@ -30,5 +30,6 @@ let test_one name =
 [<EntryPoint>]
 let main argv = 
     runTestsWithArgs defaultConfig argv Tests.tests
-    test_one "test.wav"
+   // test_one "test.wav"
+    System.Console.ReadLine() |> ignore
     0 // return an integer exit code

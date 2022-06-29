@@ -106,4 +106,44 @@ let fletcher1999 = testCase "flecther1999" <| fun _ ->
 
     Expect.isTrue true ""
 
-let tests = testList "tests" [ fletcher1999]
+open MFMD
+open System
+
+let FDM_Test = testCase "fdm" <| fun _ ->
+  let wave1 t = 0.5 * Math.Sin(t*600.0*Math.PI) //300hz
+  let wave2 t = 0.3 * Math.Sin(t*1333.0) //1330Hz
+  let wave t = wave1 t //+ wave2 t 
+
+  let time = 0.5 //sec
+  let resolution = 48000.0 //48khz
+  let timestep = 1.0 / resolution
+
+  let samples = [| 0.0 .. timestep .. 0.05 |]
+  let signal = Array.map wave samples
+
+  //sample 
+  let results = (LTH_FS signal) |> List.mapi (fun i x -> i,x)
+  for (i,(fidf,w)) in results do
+    let chartY = Scatter( 
+        x = samples,
+        y = (fidf |> List.map (fun x -> x.Real)),
+        name = sprintf "Real %i" i,
+        mode = "lines+markers")
+
+    let chartY2 = Scatter( 
+        x = samples,
+        y = w,
+        name = sprintf "W %i" i,
+        mode = "lines+markers")
+    [chartY; chartY2] |> Chart.Plot |> Chart.Show
+
+  do Scatter( 
+        x = samples,
+        y = signal,
+        name = "Signal",
+        mode = "lines+markers") |> Chart.Plot |> Chart.Show
+
+
+  Expect.isTrue true ""
+
+let tests = testList "tests" [ FDM_Test]

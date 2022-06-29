@@ -1,20 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Sound.fs" />
     <Compile Include="NLDynamics.fs" />
     <Compile Include="Fletcher.fs" />
+    <Compile Include="MFMD.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="DiffSharp" Version="0.8.4-beta" />
     <PackageReference Include="Expecto" Version="8.12.0" />
@@ -22,5 +20,4 @@
     <PackageReference Include="XPlot.Plotly" Version="2.0.0" />
     <PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.8.0" />
   </ItemGroup>
-
 </Project>

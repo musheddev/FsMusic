@@ -392,3 +392,5 @@ paket-files/
 .idea/
 *.sln.iml
 FsMusic/.ionide/symbolCache.db
+
+.ionide
